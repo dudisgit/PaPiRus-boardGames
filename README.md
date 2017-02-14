@@ -31,6 +31,7 @@ If you find it annoying programming buttons you can bind a function to be called
 e.g.
 
   downBind[0] = sayHello() -- Bind the button at the very left to call the function as soon as it is pressed
+  
   upBind[4] = shutdown() -- Bind the button at the very right to call the function as soon as the button is let go
 
 All of the functions and variables mentioned will be in the library screenTester when imported.
