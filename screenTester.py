@@ -85,6 +85,7 @@ font = ImageFont.truetype("windows_command_prompt.ttf",16)
 
 #Functions used when programming a game
 def button(index):
+    main.update()
     return buttonObj.active[index]
 def update(): #Updates the screen
     screen.drawAll()
