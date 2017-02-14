@@ -3,66 +3,45 @@
 #It uses a simple tkinter window and some buttons to emulate the actual PaPiRus screen
 
 from tkinter import *
-import time
+from PIL import Image, ImageTk
 
 class Screen(): #The fake screen
     def __init__(self,parent):
         self.draw = Canvas(parent,width=400,height=192)
-        self.board = [] #The matrix of pixels on the board
-        self.boardObj = [] #Used to store the canvas id's of the pixels used
-        self.boardChange = [] #For tracking changes in the screen (for faster rendering)
-        for x in range(0,200):
-            self.board.append([])
-            self.boardChange.append([])
-            for y in range(0,96):
-                self.board[x].append(False)
-                self.boardChange[x].append(False)
+        self.img = Image.new("1", (200,96), "white")
+        self.board = self.img.load()
         self.drawAll()
-    def drawAll(self): #Draws all the pixels from scratch
-        self.draw.delete(ALL) #Delete everything from the screen
-        self.boardObj = []
-        for x,a in enumerate(self.board): #Loop through each pixel
-            self.boardObj.append([])
-            for y,b in enumerate(a):
-                if b: #Pixel is on
-                    self.boardObj[x].append(self.draw.create_rectangle(x*2,y*2,(x*2)+2,(y*2)+2,outline="",fill="black"))
-                else:
-                    self.boardObj[x].append(self.draw.create_rectangle(x*2,y*2,(x*2)+2,(y*2)+2,outline="",fill="light gray"))
-    def updateAll(self): #Updates all the pixels on the screen
-        for x,a in enumerate(self.board):
-            for y,b in enumerate(a):
-                if b: #Pixel is on
-                    self.draw.itemconfig(self.boardObj[x][y],fill="black")
-                else:
-                    self.draw.itemconfig(self.boardObj[x][y],fill="light gray")
-    def update(self): #Update pixels that have changed
-        for x,a in enumerate(self.board):
-            if a!=self.boardChange[x]: #Has the column changed?
-                for y,b in enumerate(a):
-                    if b!=self.boardChange[x][y]:
-                        self.boardChange[x][y] = b == True #Makes sure it doesen't turn into a pointer!
-                        if b: #Pixel is on
-                            self.boardObj[x].append(self.draw.create_rectangle(x*2,y*2,(x*2)+2,(y*2)+2,outline="",fill="black"))
-                        else:
-                            self.boardObj[x].append(self.draw.create_rectangle(x*2,y*2,(x*2)+2,(y*2)+2,outline="",fill="light gray"))
+    def drawAll(self): #Draws everything to the canvas
+        self.draw.delete(ALL)
+        phot = ImageTk.PhotoImage(self.img.resize((400,192)))
+        self.draw.img = phot
+        self.draw.create_image(200,96,image=phot)
 
+def update(): #Updates the screen
+    screen.drawAll()
+def rectangle(px,py,tx,ty,fill): #Creates a rectangle
+    #'px' and 'py' are the start of the rectangle
+    #'tx' and 'ty' are the end of the rectangle
+    #'fill' is wether it is filled or now
+    if fill:
+        pass
+    else:
+        for x in range(px,tx):
+            screen.board[x,py]=1
+            screen.board[x,ty]=1
+        for y in range(py,ty):
+            screen.board[px,y]=1
+            screen.board[tx,y]=1
 
 
 
 main = Tk()
 main.title("Screen tester")
+screen = Screen(main)
+screen.draw.pack()
 
-
-
-test = Screen(main)
-test.draw.pack()
-
-main.update()
-
-for xr in range(0,200):
-    for yr in range(0,96):
-        test.board[xr][yr]=True
-        test.drawAll()
-        main.update()
+#Testing
+rectangle(10,10,20,20,False)
+update()
 
 main.mainloop()
