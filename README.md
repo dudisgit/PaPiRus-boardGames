@@ -35,3 +35,11 @@ e.g.
   upBind[4] = shutdown() -- Bind the button at the very right to call the function as soon as the button is let go
 
 All of the functions and variables mentioned will be in the library screenTester when imported.
+
+# Making a game
+
+Games made must be a python script in the "games" directory followed by its icon screen which should be EXACTLY the same name as the script (apart from the extention) with the extention .png in the "gameIcons" directory.
+
+When you have put the two files in, inside your game you need to make a class called "Main". Inside your new class put an __init__ function inside and two paramiters will be required, the first is a pointer to the screen library thing mentioned on how to use obove, the second is a pointer to a function that when called, exits the game back to the main screen.
+
+In your class you need to have a function named "loop", no paramiters. This will be called in a while loop to run the game.
