@@ -21,7 +21,7 @@ class Screen(): #The fake screen
         self.img = ImageDraw.Draw(self.imgDraw)
         self.drawAll()
     def drawAll(self): #Draws everything to the canvas
-        self.draw.display(self.img)
+        self.draw.display(self.imgDraw)
         self.draw.partial_update()
 
 font = ImageFont.truetype("windows_command_prompt.ttf",16)
@@ -29,7 +29,7 @@ font = ImageFont.truetype("windows_command_prompt.ttf",16)
 #Functions used when programming a game
 def button(index):
     global buttons
-    return GPIO.input(buttons[index]) == GPIO.LOW
+    return not GPIO.input(buttons[index])
 def update(): #Updates the screen
     screen.drawAll()
 def clear(): #Clears the screen
@@ -67,11 +67,11 @@ screen = Screen()
 buttonChange = [False,False,False,False,False]
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(20,GPIO.IN, GPIO.PUD_UP)
-GPIO.setup(26,GPIO.IN, GPIO.PUD_UP)
-GPIO.setup(19,GPIO.IN, GPIO.PUD_UP)
-GPIO.setup(16,GPIO.IN, GPIO.PUD_UP)
-GPIO.setup(21,GPIO.IN, GPIO.PUD_UP)
+GPIO.setup(20,GPIO.IN)
+GPIO.setup(26,GPIO.IN)
+GPIO.setup(19,GPIO.IN)
+GPIO.setup(16,GPIO.IN)
+GPIO.setup(21,GPIO.IN)
 buttons = {}
 buttons[0]=20
 buttons[1]=26
@@ -81,7 +81,7 @@ buttons[4]=21
 
 
 def updateLoop(): #This should be called ALLWAYS
-    active = [GPIO.input(20)==GPIO.LOW,GPIO.input(26)==GPIO.LOW,GPIO.input(19)==GPIO.LOW,GPIO.input(16)==GPIO.LOW,GPIO.input(21)==GPIO.LOW]
+    active = [not GPIO.input(20),not GPIO.input(26),not GPIO.input(19),not GPIO.input(16),not GPIO.input(21)]
     if buttonChange!=active:
         if buttonChange[0]!=active[0]:
             if active[0]:

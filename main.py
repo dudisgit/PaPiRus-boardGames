@@ -1,19 +1,21 @@
 #This is the file to be executed by the Pi
 #Its used as a main menu for the games
-import screenTester as scr
+import screen as scr
 import time, os
 import importlib as lib
+
+import os,sys
+cDir = os.getcwd()
 
 def addZero(num):
     if num<10:
         return "0"+str(num)
     return str(num)
 
-for i in range(0,30):
+for i in range(0,15):
     scr.clear()
-    scr.image(0,0,"intro/00"+addZero(i+1)+".png")
+    scr.image(0,0,"intro/00"+addZero((i*2)+1)+".png")
     scr.update()
-    #time.sleep(0.05)
 time.sleep(0.5)
 scr.clear()
 scr.text(0,0,"Please select a game to play...")
@@ -104,7 +106,8 @@ def ShutdownScript():
         ind+=1
 def enterGame(): #Enter a game
     global inGame,ind,game
-    libr = lib.import_module("games."+games[ind][:len(games[ind])-3])
+    sys.path.insert(0,cDir+"/games")
+    libr = lib.import_module(games[ind][:len(games[ind])-3])
     scr.clear()
     scr.update()
     scr.downBind[0] = scr.nil
@@ -122,6 +125,7 @@ def exitGame(): #Called by anouther library to stop playing the game
     scr.downBind[1] = ExitScript
     scr.downBind[3] = ShutdownScript
     scr.downBind[2] = enterGame
+    sys.path.insert(0,cDir)
     scr.clear()
     scr.text(0,0,"Please select a game to play...")
     scr.rectangle(6,15,194,30,False)
@@ -153,5 +157,5 @@ while run:
     scr.updateLoop()
 
 #Tempory
-scr.main.destroy()
+#scr.main.destroy()
 
