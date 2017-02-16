@@ -9,6 +9,7 @@ class Main():
         game.downBind[0] = self.slideSmall
         game.downBind[1] = self.slideBig
         game.downBind[3] = exitGame
+        game.downBind[4] = self.AINo
         game.clear()
         game.text(60,0,"Controlls")
         game.text(5,10,"1 - Switch column")
@@ -19,7 +20,13 @@ class Main():
         game.text(5,80,"Yes")
         game.text(175,80,"No")
         self.starting = True
+        self.AI = False
         game.update()
+    def AINo(self): #Button to not play againsed AI was clicked
+        if self.starting:
+            self.AI = False
+            self.starting = False
+            self.render()
     def drawItem(self,ind,typ): #Draw an object in cell index <ind>
         ps = [0,0,0,0]
         if ind==0:
@@ -74,6 +81,9 @@ class Main():
         self.render()
     def slideSmall(self):
         if self.starting:
+            self.AI = True
+            self.starting = False
+            self.render()
             return 0
         self.ind+=1
         if self.ind%3==0:
