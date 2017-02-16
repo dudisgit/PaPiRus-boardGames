@@ -80,6 +80,20 @@ class Main():
                     self.win = 1
                     self.winPos = wpos2
             else:
+                if self.AI:
+                    self.AITurn()
+                    self.turn = int(self.turn==0)
+                    win1,wpos1 = self.detectWin(-1)
+                    win2,wpos2 = self.detectWin(1)
+                    if win1 or win2:
+                        if win1:
+                            self.win = -1
+                            self.winPos = wpos1
+                        else:
+                            self.win = 1
+                            self.winPos = wpos2
+                        self.render()
+                        return 0
                 loopAround = self.ind+0
                 while self.board[self.ind]!=0:
                     self.ind+=1
