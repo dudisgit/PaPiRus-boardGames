@@ -13,7 +13,7 @@ for i in range(0,30):
     scr.clear()
     scr.image(0,0,"intro/00"+addZero(i+1)+".png")
     scr.update()
-    time.sleep(0.05)
+    #time.sleep(0.05)
 time.sleep(0.5)
 scr.clear()
 scr.text(0,0,"Please select a game to play...")
@@ -82,8 +82,7 @@ def ExitScript():
     if scr.button(4):
         run = False
     else:
-        ind-=1
-        nextGame()
+        ind+=1
 def ShutdownScript():
     global run,ind
     scr.clear()
@@ -102,8 +101,7 @@ def ShutdownScript():
         print("Shutdown")
         run = False
     else:
-        ind-=1
-        nextGame()
+        ind+=1
 def enterGame(): #Enter a game
     global inGame,ind,game
     libr = lib.import_module("games."+games[ind][:len(games[ind])-3])

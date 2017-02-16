@@ -18,6 +18,7 @@ class Main():
         game.text(40,70,"Play againsed AI?")
         game.text(5,80,"Yes")
         game.text(175,80,"No")
+        self.starting = True
         game.update()
     def drawItem(self,ind,typ): #Draw an object in cell index <ind>
         ps = [0,0,0,0]
@@ -61,6 +62,8 @@ class Main():
         self.drawItem(self.ind,"sel")
         self.scr.update()
     def slideBig(self):
+        if self.starting:
+            return 0
         self.ind+=3
         if self.ind>=9:
             self.ind-=9
@@ -70,6 +73,8 @@ class Main():
                 self.ind = 0
         self.render()
     def slideSmall(self):
+        if self.starting:
+            return 0
         self.ind+=1
         if self.ind%3==0:
             self.ind-=3

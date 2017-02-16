@@ -6,7 +6,7 @@
 
 
 from tkinter import *
-from PIL import Image, ImageTk, ImageFont, ImageDraw
+from PIL import Image, ImageTk, ImageFont, ImageDraw, ImageOps
 import math
 
 def nil():
@@ -116,6 +116,8 @@ def text(px,py,text):
     screen.img.text( (px,py), text, font=font, fill="black")
 def image(px,py,imgPath):
     img = Image.open(imgPath)
+    #img=ImageOps.invert(img)
+    img = Image.eval(img, lambda x: 255-x)
     img=img.convert("1")
     screen.img.bitmap((px,py),img)
 
