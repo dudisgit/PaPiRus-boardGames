@@ -1,5 +1,5 @@
 #noughts and crosses game
-
+from random import randint
 
 class Main():
     def __init__(self,game,exitGame):
@@ -8,6 +8,7 @@ class Main():
         self.ind = 0
         game.downBind[0] = self.slideSmall
         game.downBind[1] = self.slideBig
+        game.downBind[2] = self.place
         game.downBind[3] = exitGame
         game.downBind[4] = self.AINo
         game.clear()
@@ -20,14 +21,63 @@ class Main():
         game.text(5,80,"Yes")
         game.text(175,80,"No")
         self.starting = True
+        self.win = 0
+        self.winPos = []
         self.AI = False
+        self.turn = randint(0,1)
         game.update()
     def AINo(self): #Button to not play againsed AI was clicked
         if self.starting:
             self.AI = False
             self.starting = False
             self.render()
-    def drawItem(self,ind,typ): #Draw an object in cell index <ind>
+    def detectWin(self,p): #Detects if there is a win on the board
+        win = self.board[0]==p and self.board[1]==p and self.board[2]==p
+        winPos = [0,1,2]
+        if not win:
+            win = self.board[3]==p and self.board[4]==p and self.board[5]==p
+            winPos = [3,4,5]
+        if not win:
+            win = self.board[6]==p and self.board[7]==p and self.board[8]==p
+            winPos = [6,7,8]
+        if not win:
+            win = self.board[0]==p and self.board[3]==p and self.board[6]==p
+            winPos = [0,3,6]
+        if not win:
+            win = self.board[1]==p and self.board[4]==p and self.board[7]==p
+            winPos = [1,4,7]
+        if not win:
+            win = self.board[2]==p and self.board[5]==p and self.board[8]==p
+            winPos = [2,5,8]
+        if not win:
+            win = self.board[0]==p and self.board[4]==p and self.board[8]==p
+            winPos = [0,4,8]
+        if not win:
+            win = self.board[2]==p and self.board[4]==p and self.board[6]==p
+            winPos = [2,4,6]
+        return win,winPos
+    def place(self): #Middle button was clicked
+        if not self.starting:
+            self.board[self.ind] = (2*self.turn)-1
+            self.turn = int(self.turn==0)
+            win1,wpos1 = self.detectWin(-1)
+            win2,wpos2 = self.detectWin(1)
+            if win1 or win2:
+                if win1:
+                    self.win = -1
+                    self.winPos = wpos1
+                else:
+                    self.win = 1
+                    self.winPos = wpos2
+            else:
+                while self.board[self.ind]!=0:
+                    self.ind+=1
+                    if self.ind>=9:
+                        self.ind = 0
+            self.render()
+    def drawWin(self): #Draws the winning screen
+        pass
+    def getItemPos(self,ind) #Returns the position of a cell
         ps = [0,0,0,0]
         if ind==0:
             ps = [52,0,81,29]
@@ -47,6 +97,9 @@ class Main():
             ps = [81,67,119,96]
         elif ind==8:
             ps = [119,67,148,96]
+        return ps
+    def drawItem(self,ind,typ): #Draw an object in cell index <ind>
+        ps = self.getItemPos(ind)
         if typ=="sel":
             self.scr.rectangle(ps[0]+4,ps[1]+4,ps[2]-4,ps[3]-4,False)
         elif typ=="x":
@@ -67,6 +120,15 @@ class Main():
                 else:
                     self.drawItem(i,"o")
         self.drawItem(self.ind,"sel")
+        if self.win!=0:
+            self.drawWin()
+        else:
+            if self.turn==0:
+                self.scr.line(10,10,40,40)
+                self.scr.line(40,10,10,40)
+            else:
+                self.scr.circle(25,25,20,False)
+            self.scr.text(10,40,"TURN")
         self.scr.update()
     def slideBig(self):
         if self.starting:
