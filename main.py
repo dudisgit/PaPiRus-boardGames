@@ -1,6 +1,6 @@
 #This is the file to be executed by the Pi
 #Its used as a main menu for the games
-import screen as scr
+import screenTester as scr
 import time, os
 import importlib as lib
 
@@ -18,20 +18,25 @@ for i in range(0,15):
     scr.update()
 time.sleep(0.5)
 scr.clear()
-scr.text(0,0,"Please select a game to play...")
+scr.text(0,20,"Please select a game to play...")
 
 games = os.listdir("games")
-games.remove("__pycache__")
+rem = []
+for a in games:
+    if a[len(a)-3:]!=".py":
+        rem.append(a)
+for a in rem:
+    games.remove(a)
 ind = 0
-scr.rectangle(6,15,194,30,False)
-scr.text(10,15,games[0][:len(games[0])-3])
-scr.image(0,32, "gameIcons/"+games[0][:len(games[0])-3]+".png")
-scr.line(0,75,200,75)
-scr.text(15,80,"<")
-scr.text(175,80,">")
-scr.text(90,80,"OK")
-scr.text(45,80,"Exit")
-scr.text(130,80,"Off")
+scr.rectangle(6,35,194,50,False)
+scr.text(10,35,games[0][:len(games[0])-3])
+scr.image(0,52, "gameIcons/"+games[0][:len(games[0])-3]+".png")
+scr.line(0,18,200,18)
+scr.text(15,3,"<")
+scr.text(175,3,">")
+scr.text(90,3,"OK")
+scr.text(45,3,"Exit")
+scr.text(130,3,"Off")
 
 def nextGame():
     global ind
@@ -39,16 +44,16 @@ def nextGame():
     scr.clear()
     if ind>=len(games):
         ind=0
-    scr.text(0,0,"Please select a game to play...")
-    scr.rectangle(6,15,194,30,False)
-    scr.text(10,15,games[ind][:len(games[ind])-3])
-    scr.image(0,32, "gameIcons/"+games[ind][:len(games[ind])-3]+".png")
-    scr.line(0,75,200,75)
-    scr.text(15,80,"<")
-    scr.text(175,80,">")
-    scr.text(90,80,"OK")
-    scr.text(45,80,"Exit")
-    scr.text(130,80,"Off")
+    scr.text(0,20,"Please select a game to play...")
+    scr.rectangle(6,35,194,50,False)
+    scr.text(10,35,games[ind][:len(games[ind])-3])
+    scr.image(0,52, "gameIcons/"+games[ind][:len(games[ind])-3]+".png")
+    scr.line(0,18,200,18)
+    scr.text(15,3,"<")
+    scr.text(175,3,">")
+    scr.text(90,3,"OK")
+    scr.text(45,3,"Exit")
+    scr.text(130,3,"Off")
     scr.update()
 def beforeGame():
     global ind
@@ -56,28 +61,30 @@ def beforeGame():
     scr.clear()
     if ind<0:
         ind=len(games)-1
-    scr.text(0,0,"Please select a game to play...")
-    scr.rectangle(6,15,194,30,False)
-    scr.text(10,15,games[ind][:len(games[ind])-3])
-    scr.image(0,32, "gameIcons/"+games[ind][:len(games[ind])-3]+".png")
-    scr.line(0,75,200,75)
-    scr.text(15,80,"<")
-    scr.text(175,80,">")
-    scr.text(90,80,"OK")
-    scr.text(45,80,"Exit")
-    scr.text(130,80,"Off")
+    scr.text(0,20,"Please select a game to play...")
+    scr.rectangle(6,35,194,50,False)
+    scr.text(10,35,games[ind][:len(games[ind])-3])
+    scr.image(0,52, "gameIcons/"+games[ind][:len(games[ind])-3]+".png")
+    scr.line(0,18,200,18)
+    scr.text(15,3,"<")
+    scr.text(175,3,">")
+    scr.text(90,3,"OK")
+    scr.text(45,3,"Exit")
+    scr.text(130,3,"Off")
     scr.update()
 def ExitScript():
     global run,ind
+    if ind>=len(games):
+        return 0
     scr.clear()
-    scr.text(0,0,"Please select a game to play...")
-    scr.rectangle(6,15,194,30,False)
-    scr.text(10,15,games[ind][:len(games[ind])-3])
-    scr.image(0,32, "gameIcons/"+games[ind][:len(games[ind])-3]+".png")
-    scr.line(0,75,200,75)
-    scr.text(15,80,"No")
-    scr.text(170,80,"Yes")
-    scr.text(60,80,"Exit script?")
+    scr.text(0,20,"Please select a game to play...")
+    scr.rectangle(6,35,194,50,False)
+    scr.text(10,35,games[ind][:len(games[ind])-3])
+    scr.image(0,52, "gameIcons/"+games[ind][:len(games[ind])-3]+".png")
+    scr.line(0,18,200,18)
+    scr.text(15,3,"No")
+    scr.text(170,3,"Yes")
+    scr.text(60,3,"Exit script?")
     scr.update()
     while not scr.button(0) and not scr.button(4):
         pass
@@ -87,15 +94,17 @@ def ExitScript():
         ind+=1
 def ShutdownScript():
     global run,ind
+    if ind>=len(games):
+        return 0
     scr.clear()
-    scr.text(0,0,"Please select a game to play...")
-    scr.rectangle(6,15,194,30,False)
-    scr.text(10,15,games[ind][:len(games[ind])-3])
-    scr.image(0,32, "gameIcons/"+games[ind][:len(games[ind])-3]+".png")
-    scr.line(0,75,200,75)
-    scr.text(15,80,"No")
-    scr.text(170,80,"Yes")
-    scr.text(70,80,"Shutdown?")
+    scr.text(0,20,"Please select a game to play...")
+    scr.rectangle(6,35,194,50,False)
+    scr.text(10,35,games[ind][:len(games[ind])-3])
+    scr.image(0,52, "gameIcons/"+games[ind][:len(games[ind])-3]+".png")
+    scr.line(0,18,200,18)
+    scr.text(15,3,"No")
+    scr.text(170,3,"Yes")
+    scr.text(70,3,"Shutdown?")
     scr.update()
     while not scr.button(0) and not scr.button(4):
         pass
@@ -127,16 +136,16 @@ def exitGame(): #Called by anouther library to stop playing the game
     scr.downBind[2] = enterGame
     sys.path.insert(0,cDir)
     scr.clear()
-    scr.text(0,0,"Please select a game to play...")
-    scr.rectangle(6,15,194,30,False)
-    scr.text(10,15,games[ind][:len(games[ind])-3])
-    scr.image(0,32, "gameIcons/"+games[ind][:len(games[ind])-3]+".png")
-    scr.line(0,75,200,75)
-    scr.text(15,80,"<")
-    scr.text(175,80,">")
-    scr.text(90,80,"OK")
-    scr.text(45,80,"Exit")
-    scr.text(130,80,"Off")
+    scr.text(0,20,"Please select a game to play...")
+    scr.rectangle(6,35,194,50,False)
+    scr.text(10,35,games[ind][:len(games[ind])-3])
+    scr.image(0,52, "gameIcons/"+games[ind][:len(games[ind])-3]+".png")
+    scr.line(0,18,200,18)
+    scr.text(15,3,"<")
+    scr.text(175,3,">")
+    scr.text(90,3,"OK")
+    scr.text(45,3,"Exit")
+    scr.text(130,3,"Off")
     scr.update()
 
 

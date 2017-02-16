@@ -6,26 +6,34 @@ class Main():
         self.scr = game
         self.board = [0,0,0,0,0,0,0,0,0]
         self.ind = 0
+        self.quitBind = exitGame
         game.downBind[0] = self.slideSmall
         game.downBind[1] = self.slideBig
         game.downBind[2] = self.place
-        game.downBind[3] = exitGame
+        game.downBind[3] = self.Quit
         game.downBind[4] = self.AINo
         game.clear()
-        game.text(60,0,"Controlls")
-        game.text(5,10,"1 - Switch column")
-        game.text(5,20,"2 - Switch row")
-        game.text(5,30,"3 - Place spot")
-        game.text(5,40,"4 - Exit game")
-        game.text(40,70,"Play againsed AI?")
-        game.text(5,80,"Yes")
-        game.text(175,80,"No")
+        game.text(60,40,"Controlls")
+        game.text(5,50,"1 - Switch column")
+        game.text(5,60,"2 - Switch row")
+        game.text(5,70,"3 - Place spot")
+        game.text(5,80,"4 - Exit game")
+        game.text(40,12,"Play againsed AI?")
+        game.text(5,3,"Yes")
+        game.text(175,3,"No")
         self.starting = True
         self.win = 0
         self.winPos = []
         self.AI = False
         self.turn = randint(0,1)
         game.update()
+    def Quit(self): #Quit button was pressed
+        if self.win!=0:
+            self.win = 0
+            self.board = [0,0,0,0,0,0,0,0,0]
+            self.render()
+        else:
+            self.quitBind()
     def AINo(self): #Button to not play againsed AI was clicked
         if self.starting:
             self.AI = False
@@ -56,8 +64,10 @@ class Main():
             win = self.board[2]==p and self.board[4]==p and self.board[6]==p
             winPos = [2,4,6]
         return win,winPos
+    def AITurn(self): #Figure out what the current move should be
+        pass
     def place(self): #Middle button was clicked
-        if not self.starting:
+        if not self.starting and self.win==0:
             self.board[self.ind] = (2*self.turn)-1
             self.turn = int(self.turn==0)
             win1,wpos1 = self.detectWin(-1)
@@ -70,14 +80,33 @@ class Main():
                     self.win = 1
                     self.winPos = wpos2
             else:
+                loopAround = self.ind+0
                 while self.board[self.ind]!=0:
                     self.ind+=1
                     if self.ind>=9:
                         self.ind = 0
+                    if self.ind==loopAround:
+                        break
+                if self.ind==loopAround: #Draw
+                    self.win = 2
             self.render()
     def drawWin(self): #Draws the winning screen
-        pass
-    def getItemPos(self,ind) #Returns the position of a cell
+        if self.win!=2:
+            st = self.getItemPos(self.winPos[0])
+            en = self.getItemPos(self.winPos[2])
+            self.scr.line((st[0]+st[2])/2,(st[1]+st[3])/2,(en[0]+en[2])/2,(en[1]+en[3])/2)
+        if self.win==-1:
+            self.scr.line(150,10,190,40)
+            self.scr.line(190,10,150,40)
+        elif self.win==1:
+            self.scr.circle(170,25,20,False)
+        else:
+            self.scr.text(150,30,"NOBODY")
+        self.scr.text(160,40,"WINS")
+        self.scr.text(0,0,"Press 4")
+        self.scr.text(20,10,"to")
+        self.scr.text(0,20,"restart")
+    def getItemPos(self,ind): #Returns the position of a cell
         ps = [0,0,0,0]
         if ind==0:
             ps = [52,0,81,29]
@@ -119,10 +148,10 @@ class Main():
                     self.drawItem(i,"x")
                 else:
                     self.drawItem(i,"o")
-        self.drawItem(self.ind,"sel")
         if self.win!=0:
             self.drawWin()
         else:
+            self.drawItem(self.ind,"sel")
             if self.turn==0:
                 self.scr.line(10,10,40,40)
                 self.scr.line(40,10,10,40)
@@ -131,7 +160,7 @@ class Main():
             self.scr.text(10,40,"TURN")
         self.scr.update()
     def slideBig(self):
-        if self.starting:
+        if self.starting or self.win!=0:
             return 0
         self.ind+=3
         if self.ind>=9:
@@ -142,7 +171,7 @@ class Main():
                 self.ind = 0
         self.render()
     def slideSmall(self):
-        if self.starting:
+        if self.starting or self.win!=0:
             self.AI = True
             self.starting = False
             self.render()
