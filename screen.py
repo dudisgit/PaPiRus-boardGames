@@ -41,7 +41,7 @@ def rectangle(px,py,tx,ty,fill): #Creates a rectangle
     #'tx' and 'ty' are the end of the rectangle
     #'fill' is wether it is filled or not
     if fill:
-        screen.img.rectangle((px,py,tx,ty),1)
+        screen.img.rectangle((px,py,tx,ty),0)
     else:
         screen.img.rectangle((px,py,tx,ty))
 def circle(px,py,rad,fill): #Creates a circle

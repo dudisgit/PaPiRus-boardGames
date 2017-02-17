@@ -37,6 +37,7 @@ class Main():
             self.AI = True
             self.startup = False
             self.render()
+            self.scr.updateFull()
             return 0
         if self.win:
             return 0
@@ -49,6 +50,7 @@ class Main():
             self.AI = False
             self.startup = False
             self.render()
+            self.scr.updateFull()
             return 0
         if self.win:
             return 0
@@ -154,6 +156,7 @@ class Main():
             self.turn = gd[1]
             self.AI = gd[2]
             self.render()
+            self.scr.updateFull()
             return 0
         if self.win:
             self.board = []
