@@ -73,15 +73,15 @@ GPIO.setup(19,GPIO.IN)
 GPIO.setup(16,GPIO.IN)
 GPIO.setup(21,GPIO.IN)
 buttons = {}
-buttons[0]=20
-buttons[1]=26
-buttons[2]=19
+buttons[0]=26
+buttons[1]=19
+buttons[2]=20
 buttons[3]=16
 buttons[4]=21
 
 
 def updateLoop(): #This should be called ALLWAYS
-    active = [not GPIO.input(20),not GPIO.input(26),not GPIO.input(19),not GPIO.input(16),not GPIO.input(21)]
+    active = [not GPIO.input(26),not GPIO.input(19),not GPIO.input(20),not GPIO.input(16),not GPIO.input(21)]
     if buttonChange!=active:
         if buttonChange[0]!=active[0]:
             if active[0]:
