@@ -39,39 +39,67 @@ class Main():
             self.AI = False
             self.starting = False
             self.render()
-    def detectWin(self,p): #Detects if there is a win on the board
-        win = self.board[0]==p and self.board[1]==p and self.board[2]==p
+    def detectWin(self,p,brd): #Detects if there is a win on the board
+        win = brd[0]==p and brd[1]==p and brd[2]==p
         winPos = [0,1,2]
         if not win:
-            win = self.board[3]==p and self.board[4]==p and self.board[5]==p
+            win = brd[3]==p and brd[4]==p and brd[5]==p
             winPos = [3,4,5]
         if not win:
-            win = self.board[6]==p and self.board[7]==p and self.board[8]==p
+            win = brd[6]==p and brd[7]==p and brd[8]==p
             winPos = [6,7,8]
         if not win:
-            win = self.board[0]==p and self.board[3]==p and self.board[6]==p
+            win = brd[0]==p and brd[3]==p and brd[6]==p
             winPos = [0,3,6]
         if not win:
-            win = self.board[1]==p and self.board[4]==p and self.board[7]==p
+            win = brd[1]==p and brd[4]==p and brd[7]==p
             winPos = [1,4,7]
         if not win:
-            win = self.board[2]==p and self.board[5]==p and self.board[8]==p
+            win = brd[2]==p and brd[5]==p and brd[8]==p
             winPos = [2,5,8]
         if not win:
-            win = self.board[0]==p and self.board[4]==p and self.board[8]==p
+            win = brd[0]==p and brd[4]==p and brd[8]==p
             winPos = [0,4,8]
         if not win:
-            win = self.board[2]==p and self.board[4]==p and self.board[6]==p
+            win = brd[2]==p and brd[4]==p and brd[6]==p
             winPos = [2,4,6]
         return win,winPos
+    def minimax(self,brd,trn): #An algorithm for finding the best move
+        #brd is a board
+        #trn is the turn its working on
+        ls = 0
+        for i in range(0,9):
+            if brd[i]==0:
+                brd[i] = trn
+                isWin,ps = self.detectWin(trn,brd)
+                if isWin:
+                    ls+=trn
+                else:
+                    ls-=self.minimax(brd,trn*-1)
+                brd[i] = 0
+        return ls
     def AITurn(self): #Figure out what the current move should be
-        pass
+        ls = [0,0]
+        if self.turn==1:
+            ls[0]=99999999 #Makes sure the AI has to go (else it might skip)
+        for i in range(0,9):
+            if self.board[i]==0:
+                self.board[i] = (2*self.turn)-1
+                val = self.minimax(self.board,1-(2*self.turn))
+                if self.turn==1:
+                    if val<ls[0]:
+                        ls = [val+0,i+0]
+                else:
+                    if val>ls[0]:
+                        ls = [val+0,i+0]
+                self.board[i] = 0
+        self.board[ls[1]] = (2*self.turn)-1
     def place(self): #Middle button was clicked
         if not self.starting and self.win==0:
             self.board[self.ind] = (2*self.turn)-1
             self.turn = int(self.turn==0)
-            win1,wpos1 = self.detectWin(-1)
-            win2,wpos2 = self.detectWin(1)
+            win1,wpos1 = self.detectWin(-1,self.board)
+            win2,wpos2 = self.detectWin(1,self.board)
             if win1 or win2:
                 if win1:
                     self.win = -1
@@ -83,8 +111,8 @@ class Main():
                 if self.AI:
                     self.AITurn()
                     self.turn = int(self.turn==0)
-                    win1,wpos1 = self.detectWin(-1)
-                    win2,wpos2 = self.detectWin(1)
+                    win1,wpos1 = self.detectWin(-1,self.board)
+                    win2,wpos2 = self.detectWin(1,self.board)
                     if win1 or win2:
                         if win1:
                             self.win = -1
@@ -191,8 +219,8 @@ class Main():
             self.render()
             return 0
         self.ind+=1
-        if self.ind%3==0:
-            self.ind-=3
+        if self.ind>=9:
+            self.ind = 0
         while self.board[self.ind]!=0:
             self.ind+=1
             if self.ind>=9:
