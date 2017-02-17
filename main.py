@@ -118,6 +118,7 @@ def enterGame(): #Enter a game
     sys.path.insert(0,cDir+"/games")
     libr = lib.import_module(games[ind][:len(games[ind])-3])
     scr.clear()
+    scr.update()
     scr.updateFull()
     scr.downBind[0] = scr.nil
     scr.downBind[4] = scr.nil
@@ -146,6 +147,7 @@ def exitGame(): #Called by anouther library to stop playing the game
     scr.text(90,3,"OK")
     scr.text(45,3,"Exit")
     scr.text(130,3,"Off")
+    scr.update()
     scr.updateFull()
 
 
