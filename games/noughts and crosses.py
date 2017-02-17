@@ -108,7 +108,16 @@ class Main():
                     self.win = 1
                     self.winPos = wpos2
             else:
-                if self.AI:
+                loopAround = self.ind+0
+                while self.board[self.ind]!=0:
+                    self.ind+=1
+                    if self.ind>=9:
+                        self.ind = 0
+                    if self.ind==loopAround:
+                        break
+                if self.ind==loopAround: #Draw
+                    self.win = 2
+                elif self.AI:
                     self.AITurn()
                     self.turn = int(self.turn==0)
                     win1,wpos1 = self.detectWin(-1,self.board)
@@ -120,8 +129,6 @@ class Main():
                         else:
                             self.win = 1
                             self.winPos = wpos2
-                        self.render()
-                        return 0
                 loopAround = self.ind+0
                 while self.board[self.ind]!=0:
                     self.ind+=1
@@ -129,7 +136,7 @@ class Main():
                         self.ind = 0
                     if self.ind==loopAround:
                         break
-                if self.ind==loopAround: #Draw
+                if self.ind==loopAround and self.board[self.ind]!=0: #Draw
                     self.win = 2
             self.render()
     def drawWin(self): #Draws the winning screen
