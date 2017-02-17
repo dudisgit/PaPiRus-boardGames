@@ -90,6 +90,8 @@ def button(index):
 def update(): #Updates the screen
     screen.drawAll()
     main.update()
+def updateFull(): #Fully updates the screen (only use is in the PI version)
+    update()
 def clear(): #Clears the screen
     screen.img.rectangle((0,0,200,96),"white")
 def rectangle(px,py,tx,ty,fill): #Creates a rectangle
