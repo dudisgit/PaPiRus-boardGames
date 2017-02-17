@@ -135,7 +135,7 @@ class Main():
                 else:
                     ind = 5
                 self.board[ind][i]=self.turn
-                val = self.minimax(self.board,self.turn,4)
+                val = self.minimax(self.board,self.turn,3)
                 if self.turn==1:
                     if val<ls[0] or ls[2]:
                         ls = [val+0,[ind+0,i+0],False]
