@@ -1,6 +1,6 @@
 #This is the file to be executed by the Pi
 #Its used as a main menu for the games
-import screen as scr
+import screenTester as scr
 import time, os
 import importlib as lib
 
