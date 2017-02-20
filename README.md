@@ -58,4 +58,5 @@ class Main():
 		self.scr.text(0,0,"An example program")
 		self.scr.update()
 	def loop(self):
+
 		pass #There are no scripts that need repeated calls in this game
