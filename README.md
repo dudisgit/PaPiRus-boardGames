@@ -49,14 +49,24 @@ In your class you need to have a function named "loop", no paramiters. This will
 Example:
 
 class Main():
+
 	def __init__(self,game,exitGame):
+
 		self.scr = game
+		
 		game.downBind[2] = exitGame #When button 3 is pressed it will exit the game
+		
 		self.render()
+	
 	def render(self):
+		
 		self.scr.clear()
+		
 		self.scr.text(0,0,"An example program")
+		
 		self.scr.update()
+	
 	def loop(self):
+		
 		pass
 
