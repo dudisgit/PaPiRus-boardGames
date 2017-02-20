@@ -59,3 +59,4 @@ class Main():
 		self.scr.update()
 	def loop(self):
 		pass
+
