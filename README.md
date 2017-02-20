@@ -27,7 +27,7 @@ image(pos_x,pos_y,path) -- Draws a image at the position (pos_x,pos_y) and drawi
 
 # Using the library
 
-In your program you should try to use a while loop and call the function updateLoop as much as you can since this deals with events and if you are testing with the tester script it will update the tkinter window so it doesen't freeze
+In your program you should try to use a while loop and call the function updateLoop as much as you can since this deals with events and if you are testing with the tester script it will update the tkinter window so it doesen't freeze, and with the normal script it will do button events
 
 If you find it annoying programming buttons you can bind a function to be called when a button is pressed or let go, simply change the list 'downBind' or 'upBind' to bind a function to each button.
 e.g.
@@ -36,7 +36,7 @@ e.g.
   
   upBind[4] = shutdown() -- Bind the button at the very right to call the function as soon as the button is let go
 
-All of the functions and variables mentioned will be in the library screenTester when imported.
+All of the functions and variables mentioned will be in the library screenTester and screen when imported.
 
 # Making a game
 
@@ -46,3 +46,16 @@ The image has to be the size 200x42
 When you have put the two files in, inside your game you need to make a class called "Main". Inside your new class put an __init__ function inside and two paramiters will be required, the first is a pointer to the screen library thing mentioned on how to use obove, the second is a pointer to a function that when called, exits the game back to the main screen.
 
 In your class you need to have a function named "loop", no paramiters. This will be called in a while loop to run the game.
+Example:
+
+class Main():
+	def __init__(self,game,exitGame):
+		self.scr = game
+		game.downBind[2] = exitGame #When button 3 is pressed it will exit the game
+		self.render()
+	def render(self):
+		self.scr.clear()
+		self.scr.text(0,0,"An example program")
+		self.scr.update()
+	def loop(self):
+		pass #There are no scripts that need repeated calls in this game
