@@ -3,13 +3,15 @@ This project is aimed at bringing board games to the PaPiRus zero screen for the
 
 # Making games with library
 
-Import the file "screenTester"
+Import the file "screenTester" or "screen" (for executing on the PI)
 Commands:
 
 button( index ) -- Is button <index> down?
   Returns a bool
 
 update() -- Updates the screen to the changes you made
+
+updateFull() -- Updates the screen fully, this is slow but clears the screen from all gunky stuff
 
 clear() -- Clears the screen from all objects (doesen't update after)
 

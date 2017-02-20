@@ -1,5 +1,7 @@
 #This is the file to be executed by the Pi
 #Its used as a main menu for the games
+#You can either import 'screen' or 'screenTester'
+#They have the same functions but one if for testing and the other is to work on the PI
 import screenTester as scr
 import time, os
 import importlib as lib
