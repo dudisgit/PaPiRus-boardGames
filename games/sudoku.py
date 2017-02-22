@@ -21,7 +21,6 @@ class Main():
                 self.ind-=21
             else:
                 self.ind+=6
-        print(int(self.ind/9),(int(self.ind/9))%3)
         self.render()
     def nextOut(self):
         self.ind+=3
