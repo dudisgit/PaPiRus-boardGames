@@ -1,6 +1,8 @@
 # PaPiRus-boardGames
 This project is aimed at bringing board games to the PaPiRus zero screen for the raspberry pi
 
+For a detailed explination on making a game see the wiki
+
 # Making games with library
 
 Import the file "screenTester" or "screen" (for executing on the PI)
