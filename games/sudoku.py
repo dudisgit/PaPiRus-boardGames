@@ -31,6 +31,12 @@ class Main():
         if len(ref)==9 and not 10 in ref:
             return True
         return False
+    def box(self,x,y): #Returns a list of numbers for the square at x,y
+        lis = {}
+        for ix in range(3):
+            for iy in range(3):
+                lis[self.board[int(x/3)+ix][int(y/3)+iy][0]]=[int(x/3)+ix,int(y/3)+iy]
+        return lis
     def generateBoard(self): #Generates a new board to play
         #This algorithm works by making a solved board and then removing some numbers
         self.board = []
@@ -54,8 +60,13 @@ class Main():
                 for cx in range(3): #Squere
                     for cy in range(3): #Squere
                         self.board[(x*3)+cx][(y*3)+cy][0] = nums.pop()
+        self.render()
         for x in range(9): #Start sorting each column
-            pass
+            nums = numList.pop()
+            for i,a in enumerate(nums):
+                nuz = self.box(x,i)
+                print(nuz)
+                self.board[x][i],self.board[nuz[a][0]][nuz[a][1]]=self.board[nuz[a][0]][nuz[a][1]],self.board[x][i]
         
         while self.board[self.ind%9][int(self.ind/9)][1]: #Make sure the selecter box isn't on a number
             self.nextIn(0)
