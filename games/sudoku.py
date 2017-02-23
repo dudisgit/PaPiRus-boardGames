@@ -17,13 +17,18 @@ class Main():
     def nextIn(self):
         self.ind+=1
         if self.ind%3==0:
-            if (int(self.ind/9)+1)%3==0 and int(self.ind/9)!=0:
+            if ((int(self.ind/9)+1)%3==0 and not self.ind%9==0) or (int(self.ind/9)%3==0 and self.ind%9==0):
                 self.ind-=21
             else:
                 self.ind+=6
         self.render()
     def nextOut(self):
+        bf = int(self.ind/9)%3
         self.ind+=3
+        if int(self.ind/9)%3!=bf:
+            self.ind+=18
+        if self.ind>=81:
+            self.ind-=81
         self.render()
     def render(self): #Draws the game
         self.scr.clear()
