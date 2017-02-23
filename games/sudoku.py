@@ -35,7 +35,7 @@ class Main():
         lis = {}
         for ix in range(3):
             for iy in range(3):
-                lis[self.board[int(x/3)+ix][int(y/3)+iy][0]]=[int(x/3)+ix,int(y/3)+iy]
+                lis[self.board[(int(x/3)*3)+ix][(int(y/3)*3)+iy][0]]=[(int(x/3)*3)+ix,(int(y/3)*3)+iy]
         return lis
     def generateBoard(self): #Generates a new board to play
         #This algorithm works by making a solved board and then removing some numbers
