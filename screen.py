@@ -49,7 +49,7 @@ def circle(px,py,rad,fill): #Creates a circle
     #'rad' is the radius
     #'fill' is wether it is filled or not
     if fill:
-        screen.img.ellipse((px-int(rad/2),py-int(rad/2),px+int(rad/2),py+int(rad/2)),1)
+        screen.img.ellipse((px-int(rad/2),py-int(rad/2),px+int(rad/2),py+int(rad/2)),0)
     else:
         screen.img.ellipse((px-int(rad/2),py-int(rad/2),px+int(rad/2),py+int(rad/2)))
 def line(px,py,tx,ty):
