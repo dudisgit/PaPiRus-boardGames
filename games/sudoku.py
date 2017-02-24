@@ -31,10 +31,10 @@ class Main():
         if len(ref)==9 and not 10 in ref:
             return True
         return False
-    def box(self,x,y): #Returns a list of numbers for the square at x,y
+    def box(self,x,y,trim): #Returns a list of numbers for the square at x,y
         lis = {}
-        for ix in range(3):
-            for iy in range(3):
+        for ix in range(trim[0],3):
+            for iy in range(trim[1],3):
                 lis[self.board[(int(x/3)*3)+ix][(int(y/3)*3)+iy][0]]=[(int(x/3)*3)+ix,(int(y/3)*3)+iy]
         return lis
     def generateBoard(self): #Generates a new board to play
@@ -42,7 +42,7 @@ class Main():
         self.board = []
         numList = []
         #Generate 32 lists of numbers 1-9 in randomly order
-        for i in range(32):
+        for i in range(42):
             add = []
             gen = [i+1 for i in range(9)] #A list from 1-9 (ordered)
             for i in range(9):
@@ -53,7 +53,109 @@ class Main():
             self.board.append([])
             for y in range(9):
                 self.board[x].append([0,True])
-        #Make each squere contain numbers up to 10
+
+        #Allredey existing board
+        self.board[0][0][0]=6
+        self.board[1][0][0]=8
+        self.board[2][0][0]=2
+        self.board[3][0][0]=9
+        self.board[4][0][0]=4
+        self.board[5][0][0]=7
+        self.board[6][0][0]=5
+        self.board[7][0][0]=1
+        self.board[8][0][0]=3
+
+        self.board[0][1][0]=3
+        self.board[1][1][0]=1
+        self.board[2][1][0]=4
+        self.board[3][1][0]=6
+        self.board[4][1][0]=2
+        self.board[5][1][0]=5
+        self.board[6][1][0]=7
+        self.board[7][1][0]=9
+        self.board[8][1][0]=8
+
+        self.board[0][2][0]=9
+        self.board[1][2][0]=7
+        self.board[2][2][0]=5
+        self.board[3][2][0]=8
+        self.board[4][2][0]=3
+        self.board[5][2][0]=1
+        self.board[6][2][0]=4
+        self.board[7][2][0]=6
+        self.board[8][2][0]=2
+
+        self.board[0][3][0]=2
+        self.board[1][3][0]=5
+        self.board[2][3][0]=7
+        self.board[3][3][0]=3
+        self.board[4][3][0]=8
+        self.board[5][3][0]=6
+        self.board[6][3][0]=9
+        self.board[7][3][0]=4
+        self.board[8][3][0]=1
+
+        self.board[0][4][0]=1
+        self.board[1][4][0]=4
+        self.board[2][4][0]=6
+        self.board[3][4][0]=7
+        self.board[4][4][0]=9
+        self.board[5][4][0]=2
+        self.board[6][4][0]=3
+        self.board[7][4][0]=8
+        self.board[8][4][0]=5
+
+        self.board[0][5][0]=8
+        self.board[1][5][0]=9
+        self.board[2][5][0]=3
+        self.board[3][5][0]=1
+        self.board[4][5][0]=5
+        self.board[5][5][0]=4
+        self.board[6][5][0]=6
+        self.board[7][5][0]=2
+        self.board[8][5][0]=7
+
+        self.board[0][6][0]=7
+        self.board[1][6][0]=6
+        self.board[2][6][0]=9
+        self.board[3][6][0]=2
+        self.board[4][6][0]=1
+        self.board[5][6][0]=3
+        self.board[6][6][0]=8
+        self.board[7][6][0]=5
+        self.board[8][6][0]=4
+
+        self.board[0][7][0]=4
+        self.board[1][7][0]=2
+        self.board[2][7][0]=8
+        self.board[3][7][0]=5
+        self.board[4][7][0]=7
+        self.board[5][7][0]=9
+        self.board[6][7][0]=1
+        self.board[7][7][0]=3
+        self.board[8][7][0]=6
+
+        self.board[0][8][0]=5
+        self.board[1][8][0]=3
+        self.board[2][8][0]=1
+        self.board[3][8][0]=4
+        self.board[4][8][0]=6
+        self.board[5][8][0]=8
+        self.board[6][8][0]=2
+        self.board[7][8][0]=7
+        self.board[8][8][0]=9
+        
+        for i in range(0,128): #Randomly shuffle the pre-made board
+            r1 = randint(0,2) #squere x
+            r2 = randint(0,2) #squere y
+            r3 = randint(0,2) #shift x
+            r4 = randint(0,2) #shift y
+            self.board[r1*3],self.board[(r1*3)+r3]=self.board[(r1*3)+r3],self.board[r1*3]
+            for i in range(9):
+                self.board[i][r2*3],self.board[i][(r2*3)+r4]=self.board[i][(r2*3)+r4],self.board[i][r2*3]
+       #This is the old algorithm that might be used in the future since the one obove in my opiniun is cheating!
+        """
+        #Make each squere contain numbers 1-9
         for x in range(3):
             for y in range(3):
                 nums = numList.pop()
@@ -63,10 +165,51 @@ class Main():
         self.render()
         for x in range(9): #Start sorting each column
             nums = numList.pop()
+            reps = [0,0,0]
             for i,a in enumerate(nums):
-                nuz = self.box(x,i)
-                print(nuz)
-                self.board[x][i],self.board[nuz[a][0]][nuz[a][1]]=self.board[nuz[a][0]][nuz[a][1]],self.board[x][i]
+                if (x+1)%3==1: #At the start of the box
+                    nuz = self.box(x,i,[0,0])
+                    reps = [0,0,0]
+                    self.board[x][i],self.board[nuz[a][0]][nuz[a][1]]=self.board[nuz[a][0]][nuz[a][1]],self.board[x][i]
+                elif (x+1)%3==2: #At the middle of the box
+                    for b in range(3):
+                        if reps[b]<3:
+                            nuz = self.box(x,b*3,[1,0])
+                            if a in nuz:
+                                self.board[x][(b*3)+reps[b]],self.board[nuz[a][0]][nuz[a][1]] = self.board[nuz[a][0]][nuz[a][1]],self.board[x][(b*3)+reps[b]]
+                                reps[b]+=1
+                                break
+        for y in range(9): #Start sorting each row
+            #This side of things is broken and was why i went to the algorithm obove
+            nums = numList.pop()
+            print("new",nums)
+            reps = [[],[],[]]
+            for i,a in enumerate(nums):
+                if (y+1)%3==1: #At the start of the box
+                    for b in range(3):
+                        if len(reps[b])<3:
+                            nuz = self.box(b*3,y,[0,0])
+                            if not nuz[a][0] in reps[b]:
+                                self.board[nuz[a][0]][y],self.board[nuz[a][0]][nuz[a][1]]=self.board[nuz[a][0]][nuz[a][1]],self.board[nuz[a][0]][y]
+                                reps[b].append(nuz[a][0]+0)
+                                print("swap",self.board[nuz[a][0]][y],self.board[nuz[a][0]][nuz[a][1]])
+                                break
+                elif (y+1)%3==2 and False: #At the middle of the box
+                    for b in range(3):
+                        if reps[b]<3:
+                            nuz = self.box(x,b*3,[1,0])
+                            if a in nuz:
+                                self.board[x][(b*3)+reps[b]],self.board[nuz[a][0]][nuz[a][1]] = self.board[nuz[a][0]][nuz[a][1]],self.board[x][(b*3)+reps[b]]
+                                reps[b]+=1
+                                break"""
+
+        for x in range(3):
+            for y in range(3):
+                sq = self.box(x*3,y*3,[0,0])
+                sql = list(sq)
+                for i in range(6):
+                    vl = sq[sql.pop(randint(0,len(sql)-1))]
+                    self.board[vl[0]][vl[1]] = [10,False]
         
         while self.board[self.ind%9][int(self.ind/9)][1]: #Make sure the selecter box isn't on a number
             self.nextIn(0)
