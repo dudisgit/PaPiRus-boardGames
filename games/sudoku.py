@@ -234,7 +234,6 @@ class Main():
                                 self.board[x][(b*3)+reps[b]],self.board[nuz[a][0]][nuz[a][1]] = self.board[nuz[a][0]][nuz[a][1]],self.board[x][(b*3)+reps[b]]
                                 reps[b]+=1
                                 break"""
-
         for x in range(3):
             for y in range(3):
                 sq = self.box(x*3,y*3,[0,0])

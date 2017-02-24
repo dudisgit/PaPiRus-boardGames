@@ -8,6 +8,7 @@ class Main():
         game.downBind[2] = self.putMove
         game.downBind[3] = self.quitGame
         game.downBind[4] = exitGame
+        self.startup = True
         self.holes = []
         for y in range(7):
             self.holes.append([])
@@ -44,6 +45,7 @@ class Main():
             self.getAllMoves()
             self.sel = [self.moves[0][0]+0,self.moves[0][1]+0,self.moves[0][2]+0]
             self.win = False
+            self.startup = True
             self.render()
     def nextMove(self): #Button 2
         if self.win:
@@ -72,6 +74,7 @@ class Main():
             self.holes[self.sel[0]][self.sel[1]]=False
             self.holes[self.sel[0]+1][self.sel[1]]=False
             self.holes[self.sel[0]+2][self.sel[1]]=True
+        
         self.getAllMoves()
         
         self.selInd-=1
@@ -156,5 +159,7 @@ class Main():
             self.scr.text(162,30,"again")
         
         self.scr.update()
+        if self.startup:
+            self.scr.updateFull()
     def loop(self):
         pass
