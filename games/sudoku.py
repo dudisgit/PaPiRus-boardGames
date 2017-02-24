@@ -1,5 +1,6 @@
 #Idk the name of this game
 from random import randint
+import pickle
 
 class Main():
     def __init__(self,game,exitGame):
@@ -8,8 +9,13 @@ class Main():
         game.downBind[0] = self.nextIn
         game.downBind[1] = self.nextOut
         game.downBind[2] = self.increment
+        game.downBind[3] = self.reset
+        game.downBind[4] = self.quitGame
+        self.exitGame = exitGame
         self.ind = 0
         self.board = []
+        self.win = False
+        self.startup = True
         #Syntax for each cell in board
         #0: The number
         #1: Is perminant
@@ -20,8 +26,27 @@ class Main():
                 if rn>=10:
                     rn = 10
                 self.board[y].append([rn,rn<10])
-        self.generateBoard()
-        self.render()
+        game.text(30,14,"Load from last game?")
+        game.text(5,3,"Yes")
+        game.text(175,3,"No")
+        game.text(60,40,"Controlls")
+        game.text(5,50,"1 - Next hole")
+        game.text(5,60,"2 - Next squere")
+        game.text(5,70,"3 - Increment hole")
+        game.text(5,80,"5 - Exit game")
+        game.update()
+    def quitGame(self): #Quits the game
+        if self.startup:
+            self.startup = False
+            self.generateBoard()
+            self.render()
+            self.scr.updateFull()
+            return 0
+        if not self.win:
+            file = open("sudoku.save","wb")
+            file.write(pickle.dumps([self.board,self.ind]))
+            file.close()
+        self.exitGame()
     def checkUp(self,lis): #Returns true if the list contains numbers 1-9
         ref = []
         for a in lis:
@@ -37,6 +62,13 @@ class Main():
             for iy in range(trim[1],3):
                 lis[self.board[(int(x/3)*3)+ix][(int(y/3)*3)+iy][0]]=[(int(x/3)*3)+ix,(int(y/3)*3)+iy]
         return lis
+    def reset(self): #Reset the board ones the player has won
+        if self.win:
+            self.win = False
+            self.ind = 0
+            self.generateBoard()
+            self.render()
+            self.scr.updateFull()
     def generateBoard(self): #Generates a new board to play
         #This algorithm works by making a solved board and then removing some numbers
         self.board = []
@@ -207,13 +239,12 @@ class Main():
             for y in range(3):
                 sq = self.box(x*3,y*3,[0,0])
                 sql = list(sq)
-                for i in range(6):
+                for i in range(1):
                     vl = sq[sql.pop(randint(0,len(sql)-1))]
                     self.board[vl[0]][vl[1]] = [10,False]
         
         while self.board[self.ind%9][int(self.ind/9)][1]: #Make sure the selecter box isn't on a number
             self.nextIn(0)
-            break
     def checkWin(self): #Returns true if the game has been won
         for i in range(0,9):
             ref = []
@@ -232,12 +263,26 @@ class Main():
                 return False
         return True
     def increment(self): #Increment the box the person is currently on
-        if not self.board[self.ind%9][int(self.ind/9)][1]:
+        if not self.board[self.ind%9][int(self.ind/9)][1] and not self.win and not self.startup:
             self.board[self.ind%9][int(self.ind/9)][0]+=1
             if self.board[self.ind%9][int(self.ind/9)][0]>9:
                 self.board[self.ind%9][int(self.ind/9)][0]=1
+            if self.checkWin():
+                self.win = True
             self.render()
     def nextIn(self,*ev): #Moves the selection box inside the 9 boxes on the screen
+        if self.win:
+            return 0
+        if self.startup:
+            file = open("sudoku.save","rb")
+            d = pickle.loads(file.read())
+            file.close()
+            self.board = d[0]
+            self.ind = d[1]
+            self.render()
+            self.scr.updateFull()
+            self.startup = False
+            return 0
         self.ind+=1
         if self.ind%3==0: #Went over the limits of the box
             if ((int(self.ind/9)+1)%3==0 and not self.ind%9==0) or (int(self.ind/9)%3==0 and self.ind%9==0): #Start at the first item of the box
@@ -249,6 +294,8 @@ class Main():
                 self.nextIn(0)
             self.render()
     def nextOut(self): #Switch between each 9 boxes on the screen
+        if self.win or self.startup:
+            return 0
         bf = int(self.ind/9)%3
         self.ind+=3
         if int(self.ind/9)%3!=bf: #If the line has changed because it is on a new row then go to the box below
@@ -277,11 +324,15 @@ class Main():
                     self.scr.text(45+int(x*13.2),1+int(y*10.5),str(b[0]))
                     if not b[1]:
                         self.scr.rectangle(41+int(x*13.2),2+int(y*10.5),39+int((x+1)*13.2),int((y+1)*10.5),False)
-
-        self.scr.circle(int(46.6+((self.ind%9)*13.2)),int(6.25+(int(self.ind/9)*10.5)),10,False)
-        #self.scr.rectangle(41+int((self.ind%9)*13.2),2+int(int(self.ind/9)*10.5),
-        #                   53+int((self.ind%9)*13.2),10+int(int(self.ind/9)*10.5),
-        #                   False)
+        if self.win:
+            self.scr.text(10,0,"YOU")
+            self.scr.text(10,10,"WIN")
+            self.scr.text(162,0,"Press")
+            self.scr.text(162,10,"4 to")
+            self.scr.text(162,20,"play")
+            self.scr.text(162,30,"again")
+        else:
+            self.scr.circle(int(46.6+((self.ind%9)*13.2)),int(6.25+(int(self.ind/9)*10.5)),10,False)
         self.scr.update()
     def loop(self):
         pass
