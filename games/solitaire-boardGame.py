@@ -161,5 +161,6 @@ class Main():
         self.scr.update()
         if self.startup:
             self.scr.updateFull()
+            self.startup = False
     def loop(self):
         pass
