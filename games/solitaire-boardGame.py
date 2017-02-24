@@ -24,7 +24,7 @@ class Main():
         #2: Left
         #3: Right
         self.getAllMoves()
-        self.sel = self.moves[0].copy()
+        self.sel = [self.moves[0][0]+0,self.moves[0][1]+0,self.moves[0][2]+0]
         game.text(70,0,"Controlls")
         game.text(3,20,"1 - Select backwards")
         game.text(3,30,"2 - Select forwards")
@@ -42,7 +42,7 @@ class Main():
             self.holes[3][3]=False
             self.selInd = 0
             self.getAllMoves()
-            self.sel = self.moves[0].copy()
+            self.sel = [self.moves[0][0]+0,self.moves[0][1]+0,self.moves[0][2]+0]
             self.win = False
             self.render()
     def nextMove(self): #Button 2
@@ -51,7 +51,7 @@ class Main():
         self.selInd+=1
         if self.selInd>=len(self.moves):
             self.selInd = 0
-        self.sel = self.moves[self.selInd].copy()
+        self.sel = [self.moves[self.selInd][0]+0,self.moves[self.selInd][1]+0,self.moves[self.selInd][2]+0]
         self.render()
     def putMove(self): #Button 3
         if self.win:
@@ -81,7 +81,7 @@ class Main():
             self.win = True
             self.sel[2]=4
         else:
-            self.sel = self.moves[self.selInd].copy()
+            self.sel = [self.moves[self.selInd][0]+0,self.moves[self.selInd][1]+0,self.moves[self.selInd][2]+0]
         self.render()
     def lastMove(self): #Button 1
         if self.win:
@@ -89,7 +89,7 @@ class Main():
         self.selInd-=1
         if self.selInd<0:
             self.selInd = len(self.moves)-1
-        self.sel = self.moves[self.selInd].copy()
+        self.sel = [self.moves[self.selInd][0]+0,self.moves[self.selInd][1]+0,self.moves[self.selInd][2]+0]
         self.render()
     def getPoint(self,x,y): #Returns if a point is filled, -1 if not on the board
         if (x>1 and x<5) or (y>1 and y<5):
