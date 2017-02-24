@@ -239,7 +239,7 @@ class Main():
             for y in range(3):
                 sq = self.box(x*3,y*3,[0,0])
                 sql = list(sq)
-                for i in range(1):
+                for i in range(6):
                     vl = sq[sql.pop(randint(0,len(sql)-1))]
                     self.board[vl[0]][vl[1]] = [10,False]
         
