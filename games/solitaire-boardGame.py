@@ -76,8 +76,9 @@ class Main():
             self.holes[self.sel[0]+2][self.sel[1]]=True
         
         self.getAllMoves()
-        
-        self.selInd-=1
+
+        while self.selInd>=len(self.moves):
+            self.selInd-=1
         if self.selInd<0:
             self.selInd=0
         if len(self.moves)==0:

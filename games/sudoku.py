@@ -264,7 +264,7 @@ class Main():
     def increment(self): #Increment the box the person is currently on
         if not self.board[self.ind%9][int(self.ind/9)][1] and not self.win and not self.startup:
             self.board[self.ind%9][int(self.ind/9)][0]+=1
-            if self.board[self.ind%9][int(self.ind/9)][0]>9:
+            if self.board[self.ind%9][int(self.ind/9)][0]>10:
                 self.board[self.ind%9][int(self.ind/9)][0]=1
             if self.checkWin():
                 self.win = True
