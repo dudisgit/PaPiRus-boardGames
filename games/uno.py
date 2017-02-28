@@ -156,34 +156,41 @@ class CardList():
         scr.rectangle(3,55,197,96,False)
         for i,a in enumerate(self.cards[int(self.sel/5)*5:(int(self.sel/5)*5)+5]):
             scr.image((i*40)+1,55,"games/UNO images/"+a+".png")
-            if self.active and self.activeCards[i]:
-                scr.rectangle((i*40)+2,56,(i*40)+39,95,False)
-                scr.rectangle((i*40)+3,57,(i*40)+38,94,False)
-                scr.rectangle((i*40)+4,58,(i*40)+37,93,False)
+            if self.active and self.activeCards[(int(self.sel/5)*5)+i]:
+                for b in range(0,10):
+                    scr.line((i*40)+2,56+(b*4),(i*40)+39,56+(b*4))#,95)
+        scr.rectangle(((self.sel%5)*40),54,((self.sel%5)*40)+40,95,False)
     def upClick(self):
         self.sel+=1
         if self.sel>=len(self.cards):
-            self.sel = self.sel-(self.sel%5)
+            self.sel -= (self.sel%5)-1
         if self.sel%5==0:
             self.sel-=5
         if self.active:
+            loop = False
             while self.activeCards[self.sel]:
                 self.sel+=1
                 if self.sel>=len(self.cards):
                     self.sel = 0
+                if self.sel%5==0 and not loop and self.sel!=0:
+                    self.sel-=5
+                    loop = False
     def downClick(self):
         self.sel+=5
         self.sel = self.sel-(self.sel%5)
         if self.sel>=len(self.cards):
             self.sel-=len(self.cards)
         if self.active:
+            loop = False
             while self.activeCards[self.sel]:
                 self.sel+=1
                 if self.sel>=len(self.cards):
                     self.sel = 0
+                if self.sel%5==0 and not loop and self.sel!=0:
+                    self.sel-=5
+                    loop = True
     def drawSelect(self,scr):
         scr.rectangle(1,53,199,96,False)
-        scr.rectangle(((self.sel%5)*40),54,((self.sel%5)*40)+40,95,False)
 
 
 class Player():
@@ -203,7 +210,7 @@ class Main():
         game.downBind[4] = self.button_5
         
         self.exitGame = exitGame
-        self.screen = 4
+        self.screen = 5
         
         self.focus = 0
         self.hubIp = ""
@@ -216,10 +223,13 @@ class Main():
         self.game = {}
         self.game["dir"] = -1 #Direction of the game
         self.game["player"] = 0 #Current player
-        self.game["players"] = [Player("Testing player",12)]
+        self.game["players"] = [Player("Testing player",14)]
+        for i in range(7):
+            self.game["players"].append(Player("player-"+str(i),14))
         self.game["card"] = "0blue"
         self.game["color"] = "blue"
         self.game["stack"] = 0
+        self.game["stackers"] = ["Bob","Thing"]
         self.widg = []
         
         self.widg.append(Slider("Players",10,3,2,12))
@@ -227,7 +237,6 @@ class Main():
         self.widg.append(CheckButton("Play againsed bots",10,64))
         self.widg.append(CheckButton("Connect to hub",10,80))
         self.widg.append(Button("Next",160,80,self.setupNext))
-        self.loadGame()
         self.render()
         game.update()
     def setupNext(self): #Next button on the setup screen was pressed
@@ -242,6 +251,47 @@ class Main():
             self.game["players"].append(Player("Player: "+str(pl),self.info["cards"]))
         loadNext()
         self.render()
+    
+    #Select direction screen
+    def loadDirection(self):
+        self.widg = []
+        self.widg.append(Text("Which direction?",2,2))
+        self.widg.append(Button("Left",2,40))
+        self.widg.append(Button("Right",160,40))
+    
+    #Select Colour screen
+    def loadColour(self):
+        self.widg = []
+        self.widg.append(Text("What colour is the card?",2,2))
+        self.widg.append(Button("Red",30,20))
+        self.widg.append(Button("Green",80,20))
+        self.widg.append(Button("Yellow",30,50))
+        self.widg.append(Button("Blue",80,50))
+        
+        
+    
+    #New cards screen
+    def loadCards(self):
+        self.widg = []
+        self.widg.append(Text("CARDS!",2,2))
+        if len(self.game["stackers"])==1:
+            self.widg.append(Text(self.game["stackers"][0]+" gave you cards",2,20))
+        else:
+            add = self.game["stackers"][0]
+            for a in self.game["stackers"][1:]:
+                add+=", "+a
+            self.widg.append(Text(add,2,20))
+            self.widg.append(Text("gave you cards",2,30))
+        self.widg.append(CardList([],False))
+        self.widg.append(Button("Ok",80,40))
+    
+    #Load the player viewer tab (used to catch people out for not clicking UNO)
+    def loadPlayerView(self):
+        self.widg = []
+        self.widg.append(Button("Back",2,2))
+        self.widg.append(Button("Call out UNO for all",40,2))
+        for i,a in enumerate(self.game["players"]):
+            self.widg.append(Button(a.name,2+(int(i/4)*75),18+(i*18)-(int(i/4)*72)))
     
     #Main game playing/card selecting area
     def loadGame(self):
@@ -326,11 +376,18 @@ class Main():
     def render(self):
         self.scr.clear()
         if self.screen==4: #Main game screen
-            self.scr.image(70,0,"games/UNO images/"+self.game["card"]+".png")
-            self.scr.text(112,2,"Colour: "+self.game["color"])
-            self.scr.text(112,12,"Stack: "+str(self.game["stack"]))
+            self.scr.text(112,14,"Stack: "+str(self.game["stack"]))
             typ = "NONE"
-            crd = self.game["card"]
+            if self.focus==len(self.widg)-1:
+                crd = self.widg[-1].cards[self.widg[-1].sel]
+                col = "None!"
+                if crd[0].isnumeric() or crd[0] in ["s","c"]:
+                    col = crd[1:]
+                elif crd[:2]=="x2":
+                    col = crd[2:]
+            else:
+                col = self.game["color"]
+                crd = self.game["card"]
             if crd[0].isnumeric():
                 typ = str(crd[0])
             elif crd[0]=="s":
@@ -343,8 +400,10 @@ class Main():
                 typ="Wild x4"
             elif crd[0]=="x":
                 typ="x2"
-            self.scr.text(112,22,"Type: "+typ)
-            self.scr.text(112,32,"Select: "+str(self.widg[-1].sel+1)+"/"+str(len(self.widg[-1].cards)))
+            self.scr.image(70,0,"games/UNO images/"+self.game["card"]+".png")
+            self.scr.text(112,2,"Colour: "+col)
+            self.scr.text(112,26,"Type: "+typ)
+            self.scr.text(112,38,"Select: "+str(self.widg[-1].sel+1)+"/"+str(len(self.widg[-1].cards)))
         self.drawWidgets()
         self.scr.update()
     def drawWidgets(self): #Draws all the widgets
