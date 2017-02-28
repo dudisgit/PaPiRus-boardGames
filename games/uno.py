@@ -63,7 +63,26 @@ def randomCard():
     elif num==14:
         return "x4"
     return "uno"
-
+def possibleCards(cards,cur,col,lost): #Returns a list of possible cards for the currently placed card
+    crds = []
+    if cur=="x2" or cur=="x4" and not lost:
+        force = False
+        for a in cards:
+            if (a[:2]=="x2" and cur[:2]=="x2") or (a[:2]=="x2" and cur=="x4" and a[2:]==col) or a=="x4":
+                force = True
+                crds.append(a)
+        if force:
+            return True,crds
+    for a in cards:
+        if a[0].isnumeric() or a[0] in ["s","c"]:
+            if a[0]==cur or a[1:]==col:
+                crds.append(a)
+        elif a[:2]=="x2":
+            if cur=="x2" or a[2:]==col:
+                crds.append(a)
+        elif a=="all" or a=="x4":
+            crds.append(a)
+    return False,crds
 
 class Slider():
     def __init__(self,text,x,y,fro,to):
@@ -149,9 +168,16 @@ class CardList():
         self.cards = cards
         self.activeCards = []
         for i in range(0,len(cards)):
-            self.activeCards.append(randint(0,1)==1)
+            self.activeCards.append(False)
         self.active = active
         self.sel = 0
+    def convert(self,alo):
+        self.activeCards = []
+        for a in self.cards:
+            if a in alo:
+                self.activeCards.append(False)
+            else:
+                self.activeCards.append(True)
     def draw(self,scr):
         scr.rectangle(3,55,197,96,False)
         for i,a in enumerate(self.cards[int(self.sel/5)*5:(int(self.sel/5)*5)+5]):
@@ -168,6 +194,7 @@ class CardList():
             self.sel-=5
         if self.active:
             loop = False
+            backLoop = self.sel+0
             while self.activeCards[self.sel]:
                 self.sel+=1
                 if self.sel>=len(self.cards):
@@ -175,6 +202,8 @@ class CardList():
                 if self.sel%5==0 and not loop and self.sel!=0:
                     self.sel-=5
                     loop = False
+                if loop and self.sel==backLoop:
+                    break
     def downClick(self):
         self.sel+=5
         self.sel = self.sel-(self.sel%5)
@@ -182,6 +211,7 @@ class CardList():
             self.sel-=len(self.cards)
         if self.active:
             loop = False
+            backLoop = self.sel+0
             while self.activeCards[self.sel]:
                 self.sel+=1
                 if self.sel>=len(self.cards):
@@ -189,6 +219,8 @@ class CardList():
                 if self.sel%5==0 and not loop and self.sel!=0:
                     self.sel-=5
                     loop = True
+                if loop and self.sel==backLoop:
+                    break
     def drawSelect(self,scr):
         scr.rectangle(1,53,199,96,False)
 
@@ -205,12 +237,21 @@ class Main():
         self.scr = game
         game.downBind[0] = self.button_1
         game.downBind[1] = self.button_2
-        game.downBind[2] = self.button_3
+        #game.downBind[2] = self.button_3
+        game.downBind[2] = exitGame
         game.downBind[3] = self.button_4
         game.downBind[4] = self.button_5
         
         self.exitGame = exitGame
-        self.screen = 5
+        self.screen = 0
+        #Screens
+        #0: Setup screen
+        #1: Setup ip typing screen
+        #2: Next turn screen
+        #3: Given cards screen
+        #4: Main screen
+        #5: The player viewing screen
+        #6: The colour selecting screen
         
         self.focus = 0
         self.hubIp = ""
@@ -221,7 +262,7 @@ class Main():
         self.info["hub"] = False
 
         self.game = {}
-        self.game["dir"] = -1 #Direction of the game
+        self.game["dir"] = 0 #Direction of the game
         self.game["player"] = 0 #Current player
         self.game["players"] = [Player("Testing player",14)]
         for i in range(7):
@@ -229,7 +270,7 @@ class Main():
         self.game["card"] = "0blue"
         self.game["color"] = "blue"
         self.game["stack"] = 0
-        self.game["stackers"] = ["Bob","Thing"]
+        self.game["stackers"] = []
         self.widg = []
         
         self.widg.append(Slider("Players",10,3,2,12))
@@ -249,7 +290,7 @@ class Main():
         self.game["dir"] = 0
         for pl in range(self.info["players"]):
             self.game["players"].append(Player("Player: "+str(pl),self.info["cards"]))
-        loadNext()
+        self.loadNext()
         self.render()
     
     #Select direction screen
@@ -262,6 +303,7 @@ class Main():
     #Select Colour screen
     def loadColour(self):
         self.widg = []
+        self.screen = 6
         self.widg.append(Text("What colour is the card?",2,2))
         self.widg.append(Button("Red",30,20))
         self.widg.append(Button("Green",80,20))
@@ -271,41 +313,148 @@ class Main():
         
     
     #New cards screen
-    def loadCards(self):
+    def cardsNext(self):
+        self.loadGame()
+        typ = "NONE"
+        col = self.game["color"]
+        crd = self.game["card"]
+        if crd[0].isnumeric():
+            typ = str(crd[0])
+        elif crd[0]=="s":
+            typ="s"
+        elif crd[0]=="c":
+            typ="c"
+        elif crd=="all":
+            typ="all"
+        elif crd=="x4":
+            typ="x4"
+        elif crd[0]=="x":
+            typ="x2"
+        has,poss = possibleCards(self.game["players"][self.game["player"]].cards,typ,col,True)
+        self.widg[-1].convert(poss)
+    def loadCards(self,crds):
         self.widg = []
+        self.screen = 3
         self.widg.append(Text("CARDS!",2,2))
         if len(self.game["stackers"])==1:
             self.widg.append(Text(self.game["stackers"][0]+" gave you cards",2,20))
+        elif len(self.game["stackers"])==0:
+            self.widg.append(Text("You got cards!",2,20))
         else:
             add = self.game["stackers"][0]
             for a in self.game["stackers"][1:]:
                 add+=", "+a
             self.widg.append(Text(add,2,20))
             self.widg.append(Text("gave you cards",2,30))
-        self.widg.append(CardList([],False))
-        self.widg.append(Button("Ok",80,40))
+        self.widg.append(CardList(crds,False))
+        self.widg.append(Button("Ok",80,40,self.cardsNext))
+        self.focus = len(self.widg)-1
     
     #Load the player viewer tab (used to catch people out for not clicking UNO)
+    def playerViewBack(self):
+        self.screen = 4
+        get = self.widg[0].dump
+        self.loadGame()
+        self.widg[-1].activeCards = get
     def loadPlayerView(self):
+        self.screen = 5
+        get = self.widg[-1].activeCards
         self.widg = []
-        self.widg.append(Button("Back",2,2))
+        self.widg.append(Button("Back",2,2,self.playerViewBack))
+        self.widg[0].dump = get #Very bad way of storing stuff but yeah
         self.widg.append(Button("Call out UNO for all",40,2))
         for i,a in enumerate(self.game["players"]):
             self.widg.append(Button(a.name,2+(int(i/4)*75),18+(i*18)-(int(i/4)*72)))
     
     #Main game playing/card selecting area
+    def nextGo(self,crd,col): #Put down a card and do the next go
+        if crd!="none":
+            self.game["card"] = crd
+            self.game["color"] = col
+        if crd=="x2":
+            self.game["stack"]+=2
+            self.game["stackers"].append(self.game["players"][self.game["player"]].name)
+        elif crd=="x4":
+            self.game["stack"]+=4
+            self.game["stackers"].append(self.game["players"][self.game["player"]].name)
+        if crd=="s":
+            self.game["dir"]=self.game["dir"]*-1
+        if crd=="c":
+            self.game["player"]+=self.game["dir"]*2
+        else:
+            self.game["player"]+=self.game["dir"]
+        if self.game["player"]<0:
+            self.game["player"]+=len(self.game["players"])
+        if self.game["player"]>=len(self.game["players"]):
+            self.game["players"]-=len(self.game["players"])
+        
+    def gameEndTurn(self): #Ending the turn button
+        sel = self.widg[-1]
+        if len(sel.activeCards)==len(sel.cards): #Player cannot go
+            self.nextGo("none","")
+        elif sel.activeCards[sel.sel]:
+            return 0
+        typ = "NONE"
+        col = "None"
+        c = sel.cards[sel.sel]
+        if c[0].isnumeric() or c[0] in ["s","c"]:
+            typ = c[0]
+            col = c[1:]
+        elif c[:2]=="x2":
+            typ="x2"
+            col = c[2:]
+        if c=="x4" or c=="all":
+            self.loadColour(c)
+        else:
+            nextGo(typ,col)
     def loadGame(self):
+        self.screen = 4
+        self.focus = 2
         self.widg = []
-        self.widg.append(Button("Players ",3,3))
+        self.widg.append(Button("Players ",3,3,self.loadPlayerView))
         self.widg.append(Button("Say UNO ",3,19))
-        self.widg.append(Button("End turn",3,36))
+        self.widg.append(Button("End turn",3,36,self.gameEndTurn))
         self.widg.append(CardList(self.game["players"][self.game["player"]].cards,True))
     
     
     #Player switch screen
+    def loadNextTurn(self): #Loads the next turn for the player
+        pl = self.game["players"][self.game["player"]]
+        typ = "NONE"
+        col = self.game["color"]
+        crd = self.game["card"]
+        if crd[0].isnumeric():
+            typ = str(crd[0])
+        elif crd[0]=="s":
+            typ="s"
+        elif crd[0]=="c":
+            typ="c"
+        elif crd=="all":
+            typ="all"
+        elif crd=="x4":
+            typ="x4"
+        elif crd[0]=="x":
+            typ="x2"
+        must,poss = possibleCards(pl.cards,typ,col,False)
+        if len(poss)==0:
+            crd = []
+            if len(self.game["stackers"])!=0:
+                for i in range(self.game["stack"]):
+                    crd.append(randomCard())
+            else:
+                crd.append(randomCard())
+            self.loadCards(crd)
+            self.game["stackers"] = []
+            self.game["stack"] = 0
+            for a in crd:
+                pl.cards.append(a)
+        else:
+            self.loadGame()
+            self.widg[-1].convert(poss)
     def loadNext(self):
         self.widg = []
-        self.widg.append(Text(self.game["players"][0].name+" turn",5,5))
+        self.screen = 2
+        self.widg.append(Text(self.game["players"][self.game["player"]].name+" turn",5,5))
         self.focus = 2
         if self.game["dir"]==0:
             self.focus = 1
@@ -313,7 +462,7 @@ class Main():
             self.widg.append(Image("games/UNO images/arrowRight.png",130,15))
         elif self.game["dir"]==-1:
             self.widg.append(Image("games/UNO images/arrowLeft.png",5,15))
-        self.widg.append(Button("Take turn",50,80))
+        self.widg.append(Button("Take turn",50,80,self.loadNextTurn))
     
     #Hub screen
     def hubAddText(self,char):
@@ -332,6 +481,7 @@ class Main():
             self.widg[-1].text = "Invalid IP"
             self.render()
     def loadHubJoin(self):
+        self.screen = 1
         self.widg = []
         self.widg.append(Text("Enter IP of hub",2,0))
         self.widg.append(Text("",2,20))
