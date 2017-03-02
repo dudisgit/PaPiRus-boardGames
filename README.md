@@ -1,6 +1,8 @@
 # PaPiRus-boardGames
 This project is aimed at bringing board games to the PaPiRus zero screen for the raspberry pi
 
+To run the program simple run the script main.py, change line 5 "import screenTester as scr" to "import screen as scr" if your running on the PI with the screen.
+
 For a detailed explination on making a game see the wiki
 
 # Making games with library
