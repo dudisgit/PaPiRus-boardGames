@@ -4,6 +4,8 @@ import socket #This is for connecting it to a hub (anouther PI that displays the
 
 def nothing(*ev):
     pass
+def isNumber(ch):
+    return ch in ["0","1","2","3","4","5","6","7","8","9"]
 def checkIp(ip): #Returns true if the ip is correct
     dot = 0
     for a in ip:
@@ -75,7 +77,7 @@ def possibleCards(cards,cur,col,lost): #Returns a list of possible cards for the
         if force:
             return True,crds
     for a in cards:
-        if a[0].isnumeric() or a[0] in ["s","c"]:
+        if isNumber(a[0]) or a[0] in ["s","c"]:
             if a[0]==cur or a[1:]==col:
                 crds.append(a)
         elif a[:2]=="x2":
@@ -87,7 +89,7 @@ def possibleCards(cards,cur,col,lost): #Returns a list of possible cards for the
 def calculateScore(cards):
     score = 0
     for a in cards:
-        if a[0].isnumeric():
+        if isNumber(a[0]):
             score+=int(a[0])
         else:
             if a[:2]=="x2" or a[0]=="s" or a[0]=="c":
@@ -280,7 +282,7 @@ class Main():
             self.game["card"] = randomCard()
             if self.game["card"]!="x4" and self.game["card"]!="all" and self.game["card"][:2]!="x2":
                 break
-        if self.game["card"][0].isnumeric() or self.game["card"][0] in ["s","c"]:
+        if isNumber(self.game["card"][0]) or self.game["card"][0] in ["s","c"]:
             self.game["color"] = self.game["card"][1:]
         elif self.game["card"][:2]=="x2":
             self.game["color"] = self.game["card"][2:]
@@ -384,7 +386,7 @@ class Main():
         typ = "NONE"
         col = self.game["color"]
         crd = self.game["card"]
-        if crd[0].isnumeric():
+        if isNumber(crd[0]):
             typ = str(crd[0])
         elif crd[0]=="s":
             typ="s"
@@ -499,7 +501,7 @@ class Main():
         typ = "NONE"
         col = "None"
         c = sel.cards.pop(sel.sel)
-        if c[0].isnumeric() or c[0] in ["s","c"]:
+        if isNumber(c[0]) or c[0] in ["s","c"]:
             typ = c[0]
             col = c[1:]
         elif c[:2]=="x2":
@@ -536,7 +538,7 @@ class Main():
         typ = "NONE"
         col = self.game["color"]
         crd = self.game["card"]
-        if crd[0].isnumeric():
+        if isNumber(crd[0]):
             typ = str(crd[0])
         elif crd[0]=="s":
             typ="s"
@@ -676,14 +678,14 @@ class Main():
             if self.focus==len(self.widg)-1:
                 crd = self.widg[-1].cards[self.widg[-1].sel]
                 col = "None!"
-                if crd[0].isnumeric() or crd[0] in ["s","c"]:
+                if isNumber(crd[0]) or crd[0] in ["s","c"]:
                     col = crd[1:]
                 elif crd[:2]=="x2":
                     col = crd[2:]
             else:
                 col = self.game["color"]
                 crd = self.game["card"]
-            if crd[0].isnumeric():
+            if isNumber(crd[0]):
                 typ = str(crd[0])
             elif crd[0]=="s":
                 typ="Reverse"
