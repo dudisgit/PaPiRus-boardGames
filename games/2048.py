@@ -9,6 +9,7 @@ class Main():
         game.downBind[4] = self.moveRight
         self.scr = game
         self.score = 0
+        self.win = False
         self.lost = True
         self.quit = exitGame
         
@@ -37,6 +38,7 @@ class Main():
             self.board[1][0]=2
             self.board[0][2]=4
             self.lost = False
+            self.win = False
             self.render()
         else:
             self.quit()
@@ -77,6 +79,9 @@ class Main():
         if self.checkLost():
             self.lost = True
         self.render()
+    def makeWin(self): #Makes the player win
+        self.win = True
+        self.lost = True
     def moveUp(self): #Moves all the blocks up
         if self.lost:
             return 0
@@ -94,6 +99,8 @@ class Main():
                         if a[ind]==b:
                             self.score+=b
                             a[ind]*=2
+                            if a[ind]==2048:
+                                self.makeWin()
                             a[y]=0
                         else:
                             s = b+0
@@ -124,6 +131,8 @@ class Main():
                         if a[ind]==b:
                             self.score+=b
                             a[ind]*=2
+                            if a[ind]==2048:
+                                self.makeWin()
                             a[y]=0
                         else:
                             s = b+0
@@ -152,6 +161,8 @@ class Main():
                         if self.board[ind][y]==b:
                             self.score+=b
                             self.board[ind][y]*=2
+                            if self.board[ind][y]==2048:
+                                self.makeWin()
                             a[y]=0
                         else:
                             s = b+0
@@ -182,6 +193,8 @@ class Main():
                         if self.board[ind][y]==b:
                             self.score+=b
                             self.board[ind][y]*=2
+                            if self.board[ind][y]==2048:
+                                self.makeWin()
                             a[y]=0
                         else:
                             s = b+0
@@ -209,7 +222,13 @@ class Main():
                         self.scr.text(57+(x*22),1+(y*22),str(b))
         self.scr.text(2,2,"Score")
         self.scr.text(2,12,str(self.score))
-        if self.lost:
+        if self.win:
+            self.scr.text(150,2,"YOU")
+            self.scr.text(150,12,"WON!")
+            self.scr.text(0,32,"Press 3")
+            self.scr.text(15,42,"to")
+            self.scr.text(0,52,"restart")
+        elif self.lost:
             self.scr.text(150,2,"GAME")
             self.scr.text(150,12,"OVER")
             self.scr.text(0,32,"Press 3")
