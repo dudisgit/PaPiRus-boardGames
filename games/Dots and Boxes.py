@@ -69,36 +69,37 @@ class Main():
                     self.board[x+1][y+1]+="l"
                     self.board[x][y]+=str(pl)
                     self.score[pl-1]+=1
+    
         if x>0 and y>0:
-            if len(self.board[x-1][y-1])!=0 and not [x-1,y-1] in self.working:
+            if not [x-1,y-1] in self.working:
                 self.fillBox(x-1,y-1,pl)
         if x>0 and y<29:
-            if len(self.board[x-1][y+1])!=0 and not [x-1,y+1] in self.working:
+            if not [x-1,y+1] in self.working:
                 self.fillBox(x-1,y+1,pl)
         if x<29 and y<0:
-            if len(self.board[x+1][y-1])!=0 and not [x+1,y-1] in self.working:
+            if not [x+1,y-1] in self.working:
                 self.fillBox(x+1,y-1,pl)
         if x<29 and y<29:
-            if len(self.board[x+1][y+1])!=0 and not [x+1,y+1] in self.working:
+            if not [x+1,y+1] in self.working:
                 self.fillBox(x+1,y+1,pl)
 
         if x>0:
-            if len(self.board[x-1][y])!=0 and not [x-1,y] in self.working:
+            if not [x-1,y] in self.working:
                 self.fillBox(x-1,y,pl)
         if x<29:
-            if len(self.board[x+1][y])!=0 and not [x+1,y] in self.working:
+            if not [x+1,y] in self.working:
                 self.fillBox(x+1,y,pl)
         if y>0:
-            if len(self.board[x][y-1])!=0 and not [x,y-1] in self.working:
+            if not [x,y-1] in self.working:
                 self.fillBox(x,y-1,pl)
         if y<29:
-            if len(self.board[x][y+1])!=0 and not [x,y+1] in self.working:
+            if not [x,y+1] in self.working:
                 self.fillBox(x,y+1,pl)
     def moved(self): #A turn has finished
         self.placing = False
-        self.working = []
         s = self.score[self.turn-1]-1
         while s!=self.score[self.turn-1]:
+            self.working = []
             s = self.score[self.turn-1]+0
             self.fillBox(self.sel[0],self.sel[1],self.turn)
         if self.score[0]+self.score[1]>=840:
