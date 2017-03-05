@@ -2,10 +2,11 @@
 #Its used as a main menu for the games
 #You can either import 'screen' or 'screenTester'
 #They have the same functions but one if for testing and the other is to work on the PI
-import screenTester as scr
+import screen as scr
 import time, os
 import importlib as lib
 import os,sys
+import subprocess as sp
 cDir = os.getcwd()
 
 def addZero(num):
@@ -90,6 +91,7 @@ def ExitScript():
     while not scr.button(0) and not scr.button(4):
         pass
     if scr.button(4):
+        sp.call("sudo papirus-clear",shell=True)
         run = False
     else:
         ind+=1
@@ -111,6 +113,8 @@ def ShutdownScript():
         pass
     if scr.button(4):
         print("Shutdown")
+        sp.call("sudo papirus-clear",shell=True)
+        sp.call("sudo shutdown -h now",shell=True)
         run = False
     else:
         ind+=1

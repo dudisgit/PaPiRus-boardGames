@@ -118,7 +118,7 @@ class Slider():
         scr.text(x,y,self.text)
         scr.text(x+180-(len(str(self.value))*8),y,str(self.value))
         scr.rectangle(x,y+15,x+180,y+25,False)
-        scr.rectangle(x+2,y+17,x+2+(((self.value-self.min)/(self.max-self.min))*176),y+23,True)
+        scr.rectangle(x+2,y+17,x+2+((float(self.value-self.min)/(self.max-self.min))*176),y+23,True)
     def drawSelect(self,scr):
         scr.rectangle(self.pos[0]-2,self.pos[1]-2,self.pos[0]+182,self.pos[1]+27,False)
 
@@ -252,6 +252,7 @@ class Main():
         self.exitGame = exitGame
         self.exit = False
         self.screen = 0
+        self.lastScreen = 0
         #Screens
         #0: Setup screen
         #1: Setup ip typing screen
@@ -703,6 +704,10 @@ class Main():
             self.scr.text(112,38,"Select: "+str(self.widg[-1].sel+1)+"/"+str(len(self.widg[-1].cards)))
         self.drawWidgets()
         self.scr.update()
+        if self.screen!=self.lastScreen:
+            self.lastScreen = self.screen+0
+            if self.screen==4:
+                self.scr.updateFull()
     def drawWidgets(self): #Draws all the widgets
         for i,a in enumerate(self.widg):
             if i==self.focus:
