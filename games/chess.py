@@ -15,7 +15,8 @@ def possibleMoves(board,x,y,pl): #Retuns a list for all the possible moves for a
     p = abs(board[x][y])
     if p==1: #Pawn
         if pl==1:
-            pass
+            if y==1:
+                pass
 
 
 
