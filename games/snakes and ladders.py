@@ -28,6 +28,7 @@ class Main():
             self.turn = 0
             self.scroll = 150
             self.render()
+            self.scr.updateFull()
             return 0
         for i,a in enumerate(self.players):
             self.turn = i
@@ -69,7 +70,7 @@ class Main():
         self.scr.line(sx+(m.sin(ang+r)*s),sy+(m.cos(ang+r)*s),ex+(m.sin(ang+r)*s),ey+(m.cos(ang+r)*s))
         self.scr.line(sx+(m.sin(ang-r)*s),sy+(m.cos(ang-r)*s),ex+(m.sin(ang-r)*s),ey+(m.cos(ang-r)*s))
         dist = m.sqrt(((sx-ex)**2)+((sy-ey)**2))
-        for i in range(1,round(dist/10)):
+        for i in range(1,int(round(dist/10))):
             x,y=sx+(m.cos(0-r-ang)*(i*10)),sy+(m.sin(0-r-ang)*(i*10))
             self.scr.line(x+(m.sin(ang+r)*s),y+(m.cos(ang+r)*s),x+(m.sin(ang-r)*s),y+(m.cos(ang-r)*s))
     def drawSnake(self,sx,sy,ex,ey): #Draws a snake from (sx,sy) to (ex,ey)
@@ -78,7 +79,7 @@ class Main():
         r = m.pi/2 #90 Degreese
         dist = m.sqrt(((sx-ex)**2)+((sy-ey)**2))
         last = [sx+0,sy+0,0]
-        for i in range(1,round(dist/10)+1):
+        for i in range(1,int(round(dist/10))+1):
             x,y=sx+(m.cos(0-r-ang)*(i*10)),sy+(m.sin(0-r-ang)*(i*10))
             if last[2]==1:
                 self.scr.line(x+(m.sin(ang+r)*s),y+(m.cos(ang+r)*s),last[0],last[1])

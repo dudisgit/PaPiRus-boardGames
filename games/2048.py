@@ -89,7 +89,6 @@ class Main():
         for x,a in enumerate(self.board):
             for y,b in enumerate(a):
                 if b!=0 and y>0:
-                    has+=1
                     ind = y+0
                     for i in range(1,4):
                         if a[ind-i]!=0 or ind-i<=0:
@@ -102,6 +101,7 @@ class Main():
                             if a[ind]==2048:
                                 self.makeWin()
                             a[y]=0
+                            has+=1
                         else:
                             s = b+0
                             a[y] = 0
@@ -110,6 +110,8 @@ class Main():
                         s = b+0
                         a[y] = 0
                         a[ind]=s
+                    if y!=ind+1:
+                        has+=1
         if has!=0:
             self.goStep()
     def moveDown(self): #Moves all the blocks down
@@ -121,7 +123,6 @@ class Main():
                 y = 3-y2
                 b = a[y]
                 if b!=0 and y<3:
-                    has+=1
                     ind = y+0
                     for i in range(1,4):
                         if a[ind+i]!=0 or ind+i>=3:
@@ -134,6 +135,7 @@ class Main():
                             if a[ind]==2048:
                                 self.makeWin()
                             a[y]=0
+                            has+=1
                         else:
                             s = b+0
                             a[y] = 0
@@ -142,6 +144,8 @@ class Main():
                         s = b+0
                         a[y] = 0
                         a[ind]=s
+                    if y!=ind-1:
+                        has+=1
         if has!=0:
             self.goStep()
     def moveLeft(self): #Moves all the blocks left
@@ -151,7 +155,6 @@ class Main():
         for x,a in enumerate(self.board):
             for y,b in enumerate(a):
                 if b!=0 and x>0:
-                    has+=1
                     ind = x+0
                     for i in range(1,4):
                         if self.board[ind-i][y]!=0 or ind-i<=0:
@@ -164,6 +167,7 @@ class Main():
                             if self.board[ind][y]==2048:
                                 self.makeWin()
                             a[y]=0
+                            has+=1
                         else:
                             s = b+0
                             a[y] = 0
@@ -172,6 +176,8 @@ class Main():
                         s = b+0
                         a[y] = 0
                         self.board[ind][y] = s
+                    if x!=ind+1:
+                        has+=1
         if has!=0:
             self.goStep()
     def moveRight(self): #Moves all the blocks right
@@ -183,7 +189,6 @@ class Main():
             a = self.board[x]
             for y,b in enumerate(a):
                 if b!=0 and x<3:
-                    has+=1
                     ind = x+0
                     for i in range(1,4):
                         if self.board[ind+i][y]!=0 or ind+i>=3:
@@ -196,6 +201,7 @@ class Main():
                             if self.board[ind][y]==2048:
                                 self.makeWin()
                             a[y]=0
+                            has+=1
                         else:
                             s = b+0
                             a[y] = 0
@@ -204,6 +210,8 @@ class Main():
                         s = b+0
                         a[y] = 0
                         self.board[ind][y] = s
+                    if x!=ind-1:
+                        has+=1
         if has!=0:
             self.goStep()
     def render(self): #Draws the board
