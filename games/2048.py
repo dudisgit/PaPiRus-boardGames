@@ -94,6 +94,8 @@ class Main():
                         if a[ind-i]!=0 or ind-i<=0:
                             ind = ind-i
                             break
+                    if y!=ind+1:
+                        has+=1
                     if a[ind]!=0:
                         if a[ind]==b:
                             self.score+=b
@@ -110,8 +112,6 @@ class Main():
                         s = b+0
                         a[y] = 0
                         a[ind]=s
-                    if y!=ind+1:
-                        has+=1
         if has!=0:
             self.goStep()
     def moveDown(self): #Moves all the blocks down
@@ -128,6 +128,8 @@ class Main():
                         if a[ind+i]!=0 or ind+i>=3:
                             ind = ind+i
                             break
+                    if y!=ind-1:
+                        has+=1
                     if a[ind]!=0:
                         if a[ind]==b:
                             self.score+=b
@@ -144,8 +146,6 @@ class Main():
                         s = b+0
                         a[y] = 0
                         a[ind]=s
-                    if y!=ind-1:
-                        has+=1
         if has!=0:
             self.goStep()
     def moveLeft(self): #Moves all the blocks left
@@ -160,6 +160,8 @@ class Main():
                         if self.board[ind-i][y]!=0 or ind-i<=0:
                             ind = ind-i
                             break
+                    if x!=ind+1:
+                        has+=1
                     if self.board[ind][y]!=0:
                         if self.board[ind][y]==b:
                             self.score+=b
@@ -176,8 +178,6 @@ class Main():
                         s = b+0
                         a[y] = 0
                         self.board[ind][y] = s
-                    if x!=ind+1:
-                        has+=1
         if has!=0:
             self.goStep()
     def moveRight(self): #Moves all the blocks right
@@ -194,6 +194,8 @@ class Main():
                         if self.board[ind+i][y]!=0 or ind+i>=3:
                             ind = ind+i
                             break
+                    if x!=ind-1:
+                        has+=1
                     if self.board[ind][y]!=0:
                         if self.board[ind][y]==b:
                             self.score+=b
@@ -210,8 +212,6 @@ class Main():
                         s = b+0
                         a[y] = 0
                         self.board[ind][y] = s
-                    if x!=ind-1:
-                        has+=1
         if has!=0:
             self.goStep()
     def render(self): #Draws the board
